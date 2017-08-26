@@ -21,287 +21,739 @@
 "   You can find me at http://spf13.com
 " }
 
-" Environment {
-
-    " Basics {
-        set nocompatible        " Must be first line
-        set background=dark     " Assume a dark background
-    " }
-
-    " Windows Compatible {
-        " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
-        " across (heterogeneous) systems easier.
-        if has('win32') || has('win64')
-          set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-
-          " Be nice and check for multi_byte even if the config requires
-          " multi_byte support most of the time
-          if has("multi_byte")
-            " Windows cmd.exe still uses cp850. If Windows ever moved to
-            " Powershell as the primary terminal, this would be utf-8
-            set termencoding=cp850
-            " Let Vim use utf-8 internally, because many scripts require this
-            set encoding=utf-8
-            setglobal fileencoding=utf-8
-            " Windows has traditionally used cp1252, so it's probably wise to
-            " fallback into cp1252 instead of eg. iso-8859-15.
-            " Newer Windows files might contain utf-8 or utf-16 LE so we might
-            " want to try them first.
-            set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
-          endif
+" Bundles Prepare {
+    " Setup vim-plug Support {
+        " set the runtime path to include Vundle
+        if empty(glob('~/.vim/autoload/plug.vim'))
+            silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            autocmd VimEnter * PlugInstall | source $MYVIMRC
+        endif
+        if exists('g:exvim_custom_path')
+            exec 'set rtp+=' . fnameescape ( g:exvim_custom_path.'/.vim/bundle/Vundle' )
+            call plug#begin(g:exvim_custom_path.'/.vim/bundle/')
+        else
+        	set rtp+=~/.vim/bundle/
+        	call plug#begin('~/.vim/bundle/')
         endif
     " }
-
-    " Setup Bundle Support {
-        " The next three lines ensure that the ~/.vim/bundle/ system works
-        filetype off
-        set rtp+=~/.vim/bundle/vundle
-        call vundle#rc()
-    " }
-
-    " Add an UnBundle command {
-    function! UnBundle(arg, ...)
-      let bundle = vundle#config#init_bundle(a:arg, a:000)
-      call filter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
-    endfunction
-
-    com! -nargs=+         UnBundle
-    \ call UnBundle(<args>)
-    " }
-
 " }
 
-" Bundles {
+" Plugins {
 
-    " Deps {
-        Bundle 'gmarik/vundle'
-        Bundle 'MarcWeber/vim-addon-mw-utils'
-        Bundle 'tomtom/tlib_vim'
+    " Dependence {
+        "Plug 'gmarik/vundle'
+        Plug 'flazz/vim-colorschemes'
+        Plug 'MarcWeber/vim-addon-mw-utils'  " snipMate 依赖组件
+        Plug 'tomtom/tlib_vim'               " snipMate 依赖组件
         if executable('ag')
-            Bundle 'mileszs/ack.vim'
+            Plug 'mileszs/ack.vim'
             let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
         elseif executable('ack-grep')
             let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-            Bundle 'mileszs/ack.vim'
+            Plug 'mileszs/ack.vim'
         elseif executable('ack')
-            Bundle 'mileszs/ack.vim'
+            Plug 'mileszs/ack.vim'
         endif
     " }
 
-    " In your .vimrc.before.local file
+    " In your .vimrc.before file
     " list only the plugin groups you will use
     if !exists('g:spf13_bundle_groups')
-        let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc',]
+        let g:spf13_bundle_groups=['general', 'neocomplete',]
+        "let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc', 'git',]
     endif
-
-    " To override all the included bundles, add the following to your
-    " .vimrc.bundles.local file:
-    "   let g:override_spf13_bundles = 1
-    if !exists("g:override_spf13_bundles")
 
     " General {
         if count(g:spf13_bundle_groups, 'general')
-            Bundle 'scrooloose/nerdtree'
-            Bundle 'altercation/vim-colors-solarized'
-            Bundle 'spf13/vim-colors'
-            Bundle 'tpope/vim-surround'
-            Bundle 'tpope/vim-repeat'
-            Bundle 'jiangmiao/auto-pairs'
-            Bundle 'ctrlpvim/ctrlp.vim'
-            Bundle 'tacahiroy/ctrlp-funky'
-            Bundle 'terryma/vim-multiple-cursors'
-            Bundle 'vim-scripts/sessionman.vim'
-            Bundle 'matchit.zip'
-            if (has("python") || has("python3")) && exists('g:spf13_use_powerline') && !exists('g:spf13_use_old_powerline')
-                Bundle 'Lokaltog/powerline', {'rtp':'/powerline/bindings/vim'}
-            elseif exists('g:spf13_use_powerline') && exists('g:spf13_use_old_powerline')
-                Bundle 'Lokaltog/vim-powerline'
-            else
-                Bundle 'bling/vim-airline'
-            endif
-            Bundle 'powerline/fonts'
-            Bundle 'bling/vim-bufferline'
-            Bundle 'easymotion/vim-easymotion'
-            Bundle 'jistr/vim-nerdtree-tabs'
-            Bundle 'flazz/vim-colorschemes'
-            Bundle 'mbbill/undotree'
-            Bundle 'nathanaelkane/vim-indent-guides'
+            Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
+            "" 用于快速切换括号/引号或者标签
+            "" for repeat -> enhance surround.vim, . to repeat command
+            Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'							
+            " Highlight, Jump and Resolve Conflict Markers Quickly in Vim
+            Plug 'rhysd/conflict-marker.vim'
+            " 动补全单引号，双引号等
+            Plug 'jiangmiao/auto-pairs'         "instead of Plug 'Raimondi/delimitMate'
+            " quick locate file or function
+            Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
+            " 显示marks - 方便自己进行标记和跳转
+            Plug 'kshenoy/vim-signature'
+            Plug 'aperezdc/vim-template' "代码模版
+            Plug 'terryma/vim-multiple-cursors'
+            " ctrlspace
+            Plug 'szw/vim-ctrlspace'
+            Plug 'vim-airline/vim-airline'
+            Plug 'vim-airline/vim-airline-themes'
+            " quick run
+            " quickrun
+            Plug 'thinca/vim-quickrun'
+            Plug 'bling/vim-bufferline'
+            Plug 'easymotion/vim-easymotion'
+            " gundo  edit history, 可以查看回到某个历史状态
+            Plug 'sjl/gundo.vim'
+            Plug 'mbbill/undotree'
             if !exists('g:spf13_no_views')
-                Bundle 'vim-scripts/restore_view.vim'
+                Plug 'vim-scripts/restore_view.vim'
             endif
-            Bundle 'mhinz/vim-signify'
-            Bundle 'tpope/vim-abolish.git'
-            Bundle 'osyo-manga/vim-over'
-            Bundle 'kana/vim-textobj-user'
-            Bundle 'kana/vim-textobj-indent'
-            Bundle 'gcmt/wildfire.vim'
+
+            "Plug 'mhinz/vim-signify'
+            ""快速替换字符串
+            "Plug 'tpope/vim-abolish'
+            "Plug 'osyo-manga/vim-over'
+            "Plug 'gcmt/wildfire.vim'
+
+            "Plug 'kana/vim-textobj-user'
+            "Plug 'kana/vim-textobj-indent'
+            "Plug 'kana/vim-textobj-line'
+            "Plug 'kana/vim-textobj-entire'
         endif
     " }
 
+    " ex-vim plugins {
+        if count(g:spf13_bundle_groups, 'ex-vim-plugins')
+            Plug 'exvim/ex-autocomplpop'
+            Plug 'exvim/ex-visincr'
+        endif
+    " }
+ 
     " Writing {
         if count(g:spf13_bundle_groups, 'writing')
-            Bundle 'reedes/vim-litecorrect'
-            Bundle 'reedes/vim-textobj-sentence'
-            Bundle 'reedes/vim-textobj-quote'
-            Bundle 'reedes/vim-wordy'
+            Plug 'reedes/vim-litecorrect'
+            Plug 'reedes/vim-textobj-sentence'
+            Plug 'reedes/vim-textobj-quote'
+            Plug 'reedes/vim-wordy'
         endif
     " }
 
     " General Programming {
         if count(g:spf13_bundle_groups, 'programming')
             " Pick one of the checksyntax, jslint, or syntastic
-            Bundle 'scrooloose/syntastic'
-            Bundle 'tpope/vim-fugitive'
-            Bundle 'mattn/webapi-vim'
-            Bundle 'mattn/gist-vim'
-            Bundle 'scrooloose/nerdcommenter'
-            Bundle 'tpope/vim-commentary'
-            Bundle 'godlygeek/tabular'
+            Plug 'scrooloose/syntastic'
+            Plug 'scrooloose/nerdcommenter'
+            Plug 'tpope/vim-commentary'     "批量注释工具, 可以注释多行和去除多行注释
+            Plug 'godlygeek/tabular'
+            "Plug 'junegunn/vim-easy-align'
+            Plug 'luochen1990/rainbow'      "instead of  "Plug 'kien/rainbow_parentheses.vim'
             if executable('ctags')
-                Bundle 'majutsushi/tagbar'
+                Plug 'majutsushi/tagbar'
             endif
         endif
     " }
 
+    " Git {
+        if count(g:spf13_bundle_groups, 'git')
+            Plug 'tpope/vim-fugitive'
+            Plug 'mattn/webapi-vim'
+            Plug 'mattn/gist-vim'
+        endif
+
+    "}
+
     " Snippets & AutoComplete {
         if count(g:spf13_bundle_groups, 'snipmate')
-            Bundle 'garbas/vim-snipmate'
-            Bundle 'honza/vim-snippets'
+            Plug 'garbas/vim-snipmate'
+            Plug 'honza/vim-snippets'
             " Source support_function.vim to support vim-snippets.
             if filereadable(expand("~/.vim/bundle/vim-snippets/snippets/support_functions.vim"))
                 source ~/.vim/bundle/vim-snippets/snippets/support_functions.vim
             endif
         elseif count(g:spf13_bundle_groups, 'youcompleteme')
-            Bundle 'Valloric/YouCompleteMe'
-            Bundle 'SirVer/ultisnips'
-            Bundle 'honza/vim-snippets'
+            Plug 'Valloric/YouCompleteMe'
+            Plug 'SirVer/ultisnips'
+            Plug 'honza/vim-snippets'
         elseif count(g:spf13_bundle_groups, 'neocomplcache')
-            Bundle 'Shougo/neocomplcache'
-            Bundle 'Shougo/neosnippet'
-            Bundle 'Shougo/neosnippet-snippets'
-            Bundle 'honza/vim-snippets'
+            Plug 'Shougo/neocomplcache'
+            Plug 'Shougo/neosnippet'
+            Plug 'Shougo/neosnippet-snippets'
+            Plug 'honza/vim-snippets'
         elseif count(g:spf13_bundle_groups, 'neocomplete')
-            Bundle 'Shougo/neocomplete.vim.git'
-            Bundle 'Shougo/neosnippet'
-            Bundle 'Shougo/neosnippet-snippets'
-            Bundle 'honza/vim-snippets'
+            Plug 'Shougo/neocomplete.vim'
+            Plug 'Shougo/neosnippet'
+            Plug 'Shougo/neosnippet-snippets'
+            Plug 'honza/vim-snippets'
         endif
-    " }
-
-    " PHP {
-        if count(g:spf13_bundle_groups, 'php')
-            Bundle 'spf13/PIV'
-            Bundle 'arnaud-lb/vim-php-namespace'
-            Bundle 'beyondwords/vim-twig'
-        endif
-    " }
+   " }
 
     " Python {
         if count(g:spf13_bundle_groups, 'python')
             " Pick either python-mode or pyflakes & pydoc
-            Bundle 'klen/python-mode'
-            Bundle 'yssource/python.vim'
-            Bundle 'python_match.vim'
-            Bundle 'pythoncomplete'
+            Plug 'klen/python-mode'
+            Plug 'yssource/python.vim'
+            Plug 'vim-scripts/python_match.vim'
+            Plug 'vim-scripts/pythoncomplete'
         endif
     " }
 
     " Javascript {
         if count(g:spf13_bundle_groups, 'javascript')
-            Bundle 'elzr/vim-json'
-            Bundle 'groenewege/vim-less'
-            Bundle 'pangloss/vim-javascript'
-            Bundle 'briancollins/vim-jst'
-            Bundle 'kchmck/vim-coffee-script'
-        endif
-    " }
-
-    " Scala {
-        if count(g:spf13_bundle_groups, 'scala')
-            Bundle 'derekwyatt/vim-scala'
-            Bundle 'derekwyatt/vim-sbt'
-            Bundle 'xptemplate'
-        endif
-    " }
-
-    " Haskell {
-        if count(g:spf13_bundle_groups, 'haskell')
-            Bundle 'travitch/hasksyn'
-            Bundle 'dag/vim2hs'
-            Bundle 'Twinside/vim-haskellConceal'
-            Bundle 'Twinside/vim-haskellFold'
-            Bundle 'lukerandall/haskellmode-vim'
-            Bundle 'eagletmt/neco-ghc'
-            Bundle 'eagletmt/ghcmod-vim'
-            Bundle 'Shougo/vimproc.vim'
-            Bundle 'adinapoli/cumino'
-            Bundle 'bitc/vim-hdevtools'
-        endif
-    " }
-
-    " HTML {
-        if count(g:spf13_bundle_groups, 'html')
-            Bundle 'amirh/HTML-AutoCloseTag'
-            Bundle 'hail2u/vim-css3-syntax'
-            Bundle 'gorodinskiy/vim-coloresque'
-            Bundle 'tpope/vim-haml'
-        endif
-    " }
-
-    " Ruby {
-        if count(g:spf13_bundle_groups, 'ruby')
-            Bundle 'tpope/vim-rails'
-            let g:rubycomplete_buffer_loading = 1
-            "let g:rubycomplete_classes_in_global = 1
-            "let g:rubycomplete_rails = 1
-        endif
-    " }
-
-    " Puppet {
-        if count(g:spf13_bundle_groups, 'puppet')
-            Bundle 'rodjek/vim-puppet'
-        endif
-    " }
-
-    " Go Lang {
-        if count(g:spf13_bundle_groups, 'go')
-            "Bundle 'Blackrush/vim-gocode'
-            Bundle 'fatih/vim-go'
-        endif
-    " }
-
-    " Elixir {
-        if count(g:spf13_bundle_groups, 'elixir')
-            Bundle 'elixir-lang/vim-elixir'
-            Bundle 'carlosgaldino/elixir-snippets'
-            Bundle 'mattreduce/vim-mix'
+            Plug 'elzr/vim-json'
+            Plug 'groenewege/vim-less'
+            Plug 'pangloss/vim-javascript'
+            Plug 'briancollins/vim-jst'
+            Plug 'kchmck/vim-coffee-script'
         endif
     " }
 
     " Misc {
         if count(g:spf13_bundle_groups, 'misc')
-            Bundle 'rust-lang/rust.vim'
-            Bundle 'tpope/vim-markdown'
-            Bundle 'spf13/vim-preview'
-            Bundle 'tpope/vim-cucumber'
-            Bundle 'cespare/vim-toml'
-            Bundle 'quentindecock/vim-cucumber-align-pipes'
-            Bundle 'saltstack/salt-vim'
+            Plug 'rust-lang/rust.vim'
+            Plug 'tpope/vim-markdown'
+            Plug 'spf13/vim-preview'
+            Plug 'tpope/vim-cucumber'
+            Plug 'cespare/vim-toml'
+            Plug 'quentindecock/vim-cucumber-align-pipes'
+            Plug 'saltstack/salt-vim'
         endif
     " }
 
-    endif
-
 " }
 
-" Use fork bundles config if available {
-    if filereadable(expand("~/.vimrc.bundles.fork"))
-        source ~/.vimrc.bundles.fork
+" Plugins Setting {
+
+	" LargeFile {
+		if isdirectory(expand("~/.vim/bundle/LargeFile/"))
+			let g:LargeFile= 5 " files >= 5MB will use LargeFile rules
+		endif
+	" }
+
+    " TextObj Sentence {
+        if count(g:spf13_bundle_groups, 'writing')
+            augroup textobj_sentence
+              autocmd!
+              autocmd FileType markdown call textobj#sentence#init()
+              autocmd FileType textile call textobj#sentence#init()
+              autocmd FileType text call textobj#sentence#init()
+            augroup END
+        endif
+    " }
+
+    " TextObj Quote {
+        if count(g:spf13_bundle_groups, 'writing')
+            augroup textobj_quote
+                autocmd!
+                autocmd FileType markdown call textobj#quote#init()
+                autocmd FileType textile call textobj#quote#init()
+                autocmd FileType text call textobj#quote#init({'educate': 0})
+            augroup END
+        endif
+    " }
+
+    " Misc {
+        if isdirectory(expand("~/.vim/bundle/nerdtree"))
+            let g:NERDShutUp=1
+        endif
+        if isdirectory(expand("~/.vim/bundle/matchit.zip"))
+            let b:match_ignorecase = 1
+        endif
+    " }
+
+    " OmniComplete {
+        " To disable omni complete, add the following to your .vimrc.before file:
+        "   let g:spf13_no_omni_complete = 1
+        if !exists('g:spf13_no_omni_complete')
+            if has("autocmd") && exists("+omnifunc")
+                autocmd Filetype *
+                    \if &omnifunc == "" |
+                    \setlocal omnifunc=syntaxcomplete#Complete |
+                    \endif
+            endif
+
+            hi Pmenu  guifg=#000000 guibg=#F8F8F8 ctermfg=black ctermbg=Lightgray
+            hi PmenuSbar  guifg=#8A95A7 guibg=#F8F8F8 gui=NONE ctermfg=darkcyan ctermbg=lightgray cterm=NONE
+            hi PmenuThumb  guifg=#F8F8F8 guibg=#8A95A7 gui=NONE ctermfg=lightgray ctermbg=darkcyan cterm=NONE
+
+            " Some convenient mappings
+            "inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
+            if exists('g:spf13_map_cr_omni_complete')
+                inoremap <expr> <CR>     pumvisible() ? "\<C-y>" : "\<CR>"
+            endif
+            inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+            inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+            inoremap <expr> <C-d>      pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
+            inoremap <expr> <C-u>      pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
+
+            " Automatically open and close the popup menu / preview window
+            au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
+            set completeopt=menu,preview,longest
+        endif
+    " }
+
+    " Ctags {
+        set tags=./tags;/,~/.vimtags
+
+        " Make tags placed in .git/tags file available in all levels of a repository
+        let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
+        if gitroot != ''
+            let &tags = &tags . ',' . gitroot . '/.git/tags'
+        endif
+    " }
+
+    " AutoCloseTag {
+        " Make it so AutoCloseTag works for xml and xhtml files as well
+        au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
+        nmap <Leader>ac <Plug>ToggleAutoCloseMappings
+    " }
+
+    " SnipMate {
+        " Setting the author var
+        " If forking, please overwrite in your .vimrc.local file
+        let g:snips_author = 'Steve Francia <steve.francia@gmail.com>'
+    " }
+
+    " NerdTree NerdTreeTab{
+        if isdirectory(expand("~/.vim/bundle/nerdtree"))
+            map <C-e> <plug>NERDTreeTabsToggle<CR>
+            map <leader>e :NERDTreeFind<CR>
+            nmap <leader>nt :NERDTreeFind<CR>
+
+            let NERDTreeHighlightCursorline=1
+            let NERDTreeShowBookmarks=1
+            let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
+            let NERDTreeChDirMode=0
+            let NERDTreeQuitOnOpen=1
+            let NERDTreeMouseMode=2
+            let NERDTreeShowHidden=1
+            let NERDTreeKeepTreeInNewTab=1
+            let g:nerdtree_tabs_open_on_gui_startup=0
+            " s/v 分屏打开文件
+            let g:NERDTreeMapOpenSplit = 's'
+            let g:NERDTreeMapOpenVSplit = 'v'
+
+            " nerdtreetabs
+            " 关闭同步
+            let g:nerdtree_tabs_synchronize_view=0
+            let g:nerdtree_tabs_synchronize_focus=0
+            " 是否自动开启nerdtree
+            " thank to @ListenerRi, see https://github.com/wklken/k-vim/issues/165
+            let g:nerdtree_tabs_open_on_console_startup=0
+            let g:nerdtree_tabs_open_on_gui_startup=0
+        endif
+    " }
+
+    " Tabularize {
+        if isdirectory(expand("~/.vim/bundle/tabular"))
+            nmap <Leader>a& :Tabularize /&<CR>
+            vmap <Leader>a& :Tabularize /&<CR>
+            nmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+            vmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
+            nmap <Leader>a=> :Tabularize /=><CR>
+            vmap <Leader>a=> :Tabularize /=><CR>
+            nmap <Leader>a: :Tabularize /:<CR>
+            vmap <Leader>a: :Tabularize /:<CR>
+            nmap <Leader>a:: :Tabularize /:\zs<CR>
+            vmap <Leader>a:: :Tabularize /:\zs<CR>
+            nmap <Leader>a, :Tabularize /,<CR>
+            vmap <Leader>a, :Tabularize /,<CR>
+            nmap <Leader>a,, :Tabularize /,\zs<CR>
+            vmap <Leader>a,, :Tabularize /,\zs<CR>
+            nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+            vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+        endif
+    " }
+
+    " vim-easy-align {
+    if isdirectory(expand("~/.vim/bundle/vim-easy-align"))
+        vmap <Leader>a <Plug>(EasyAlign)
+        nmap <Leader>a <Plug>(EasyAlign)
+        if !exists('g:easy_align_delimiters')
+            let g:easy_align_delimiters = {}
+        endif
+        let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
     endif
+    " }
+
+    " Session List {
+        set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize
+        if isdirectory(expand("~/.vim/bundle/sessionman.vim/"))
+            nmap <leader>sl :SessionList<CR>
+            nmap <leader>ss :SessionSave<CR>
+            nmap <leader>sc :SessionClose<CR>
+        endif
+    "  }
+
+    " JSON {
+        nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
+        let g:vim_json_syntax_conceal = 0
+    " }
+
+    " PyMode {
+        " Disable if python support not present
+        if !has('python') && !has('python3')
+            let g:pymode = 0
+        endif
+
+        if isdirectory(expand("~/.vim/bundle/python-mode"))
+            let g:pymode_lint_checkers = ['pyflakes']
+            let g:pymode_trim_whitespaces = 0
+            let g:pymode_options = 0
+            let g:pymode_rope = 0
+        endif
+    " }
+
+    " ctrlp {
+        if isdirectory(expand("~/.vim/bundle/ctrlp.vim/"))
+            let g:ctrlp_working_path_mode = 'ra'
+            nnoremap <silent> <D-t> :CtrlP<CR>
+            nnoremap <silent> <D-r> :CtrlPMRU<CR>
+            let g:ctrlp_custom_ignore = {
+                \ 'dir':  '\.git$\|\.hg$\|\.svn$',
+                \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
+
+            if executable('ag')
+                let s:ctrlp_fallback = 'ag %s --nocolor -l -g ""'
+            elseif executable('ack-grep')
+                let s:ctrlp_fallback = 'ack-grep %s --nocolor -f'
+            elseif executable('ack')
+                let s:ctrlp_fallback = 'ack %s --nocolor -f'
+            " On Windows use "dir" as fallback command.
+            elseif WINDOWS()
+                let s:ctrlp_fallback = 'dir %s /-n /b /s /a-d'
+            else
+                let s:ctrlp_fallback = 'find %s -type f'
+            endif
+            if exists("g:ctrlp_user_command")
+                unlet g:ctrlp_user_command
+            endif
+            let g:ctrlp_user_command = {
+                \ 'types': {
+                    \ 1: ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others'],
+                    \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+                \ },
+                \ 'fallback': s:ctrlp_fallback
+            \ }
+
+            if isdirectory(expand("~/.vim/bundle/ctrlp-funky/"))
+                " CtrlP extensions
+                let g:ctrlp_extensions = ['funky']
+
+                "funky
+                nnoremap <Leader>fu :CtrlPFunky<Cr>
+            endif
+        endif
+    "}
+
+    " TagBar {
+        if isdirectory(expand("~/.vim/bundle/tagbar/"))
+            nnoremap <silent> <leader>tt :TagbarToggle<CR>
+            let g:tagbar_autofocus = 1
+            " let g:tagbar_autoshowtag = 1
+            " let g:tagbar_show_visibility = 1
+        endif
+    "}
+
+    " Rainbow {
+        if isdirectory(expand("~/.vim/bundle/rainbow/"))
+            let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+        endif
+    " }
+     " Fugitive {
+        if isdirectory(expand("~/.vim/bundle/vim-fugitive/"))
+            nnoremap <silent> <leader>gs :Gstatus<CR>
+            nnoremap <silent> <leader>gd :Gdiff<CR>
+            nnoremap <silent> <leader>gc :Gcommit<CR>
+            nnoremap <silent> <leader>gb :Gblame<CR>
+            nnoremap <silent> <leader>gl :Glog<CR>
+            nnoremap <silent> <leader>gp :Git push<CR>
+            nnoremap <silent> <leader>gr :Gread<CR>
+            nnoremap <silent> <leader>gw :Gwrite<CR>
+            nnoremap <silent> <leader>ge :Gedit<CR>
+            " Mnemonic _i_nteractive
+            nnoremap <silent> <leader>gi :Git add -p %<CR>
+            nnoremap <silent> <leader>gg :SignifyToggle<CR>
+        endif
+    "}
+
+    " YouCompleteMe {
+        if count(g:spf13_bundle_groups, 'youcompleteme')
+            let g:acp_enableAtStartup = 0
+
+            " enable completion from tags
+            let g:ycm_collect_identifiers_from_tags_files = 1
+
+            " remap Ultisnips for compatibility for YCM
+            let g:UltiSnipsExpandTrigger = '<C-j>'
+            let g:UltiSnipsJumpForwardTrigger = '<C-j>'
+            let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
+
+            " Enable omni completion.
+            autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+            autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+            autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+            autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+            autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+            autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+            autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+
+            " Haskell post write lint and check with ghcmod
+            " $ `cabal install ghcmod` if missing and ensure
+            " ~/.cabal/bin is in your $PATH.
+            if !executable("ghcmod")
+                autocmd BufWritePost *.hs GhcModCheckAndLintAsync
+            endif
+
+            " For snippet_complete marker.
+            if !exists("g:spf13_no_conceal")
+                if has('conceal')
+                    set conceallevel=2 concealcursor=i
+                endif
+            endif
+
+            " Disable the neosnippet preview candidate window
+            " When enabled, there can be too much visual noise
+            " especially when splits are used.
+            set completeopt-=preview
+        endif
+    " }
+
+    " neocomplete {
+        if count(g:spf13_bundle_groups, 'neocomplete')
+            let g:acp_enableAtStartup = 0
+            let g:neocomplete#enable_at_startup = 1
+            let g:neocomplete#enable_smart_case = 1
+            let g:neocomplete#enable_auto_delimiter = 1
+            let g:neocomplete#max_list = 15
+            let g:neocomplete#force_overwrite_completefunc = 1
+
+
+            " Define dictionary.
+            let g:neocomplete#sources#dictionary#dictionaries = {
+                        \ 'default' : '',
+                        \ 'vimshell' : $HOME.'/.vimshell_hist',
+                        \ 'scheme' : $HOME.'/.gosh_completions'
+                        \ }
+
+            " Define keyword.
+            if !exists('g:neocomplete#keyword_patterns')
+                let g:neocomplete#keyword_patterns = {}
+            endif
+            let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+            " Plugin key-mappings {
+                " These two lines conflict with the default digraph mapping of <C-K>
+                if !exists('g:spf13_no_neosnippet_expand')
+                    imap <C-k> <Plug>(neosnippet_expand_or_jump)
+                    smap <C-k> <Plug>(neosnippet_expand_or_jump)
+                endif
+                if exists('g:spf13_noninvasive_completion')
+                    inoremap <CR> <CR>
+                    " <ESC> takes you out of insert mode
+                    inoremap <expr> <Esc>   pumvisible() ? "\<C-y>\<Esc>" : "\<Esc>"
+                    " <CR> accepts first, then sends the <CR>
+                    inoremap <expr> <CR>    pumvisible() ? "\<C-y>\<CR>" : "\<CR>"
+                    " <Down> and <Up> cycle like <Tab> and <S-Tab>
+                    inoremap <expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
+                    inoremap <expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
+                    " Jump up and down the list
+                    inoremap <expr> <C-d>   pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
+                    inoremap <expr> <C-u>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
+                else
+                    " <C-k> Complete Snippet
+                    " <C-k> Jump to next snippet point
+                    imap <silent><expr><C-k> neosnippet#expandable() ?
+                                \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
+                                \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
+                    smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
+
+                    inoremap <expr><C-g> neocomplete#undo_completion()
+                    inoremap <expr><C-l> neocomplete#complete_common_string()
+                    "inoremap <expr><CR> neocomplete#complete_common_string()
+
+                    " <CR>: close popup
+                    " <s-CR>: close popup and save indent.
+                    inoremap <expr><s-CR> pumvisible() ? neocomplete#smart_close_popup()."\<CR>" : "\<CR>"
+
+                    function! CleverCr()
+                        if pumvisible()
+                            if neosnippet#expandable()
+                                let exp = "\<Plug>(neosnippet_expand)"
+                                return exp . neocomplete#smart_close_popup()
+                            else
+                                return neocomplete#smart_close_popup()
+                            endif
+                        else
+                            return "\<CR>"
+                        endif
+                    endfunction
+
+                    " <CR> close popup and save indent or expand snippet
+                    imap <expr> <CR> CleverCr()
+                    " <C-h>, <BS>: close popup and delete backword char.
+                    inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+                    inoremap <expr><C-y> neocomplete#smart_close_popup()
+                endif
+                " <TAB>: completion.
+                inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+                inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
+
+                " Courtesy of Matteo Cavalleri
+
+                function! CleverTab()
+                    if pumvisible()
+                        return "\<C-n>"
+                    endif
+                    let substr = strpart(getline('.'), 0, col('.') - 1)
+                    let substr = matchstr(substr, '[^ \t]*$')
+                    if strlen(substr) == 0
+                        " nothing to match on empty string
+                        return "\<Tab>"
+                    else
+                        " existing text matching
+                        if neosnippet#expandable_or_jumpable()
+                            return "\<Plug>(neosnippet_expand_or_jump)"
+                        else
+                            return neocomplete#start_manual_complete()
+                        endif
+                    endif
+                endfunction
+
+                imap <expr> <Tab> CleverTab()
+            " }
+
+            " Enable heavy omni completion.
+            if !exists('g:neocomplete#sources#omni#input_patterns')
+                let g:neocomplete#sources#omni#input_patterns = {}
+            endif
+            let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+            let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+            let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+            let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+            let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
+    " }
+    "
+    " Normal Vim omni-completion {
+    " To disable omni complete, add the following to your .vimrc.before file:
+    "   let g:spf13_no_omni_complete = 1
+        elseif !exists('g:spf13_no_omni_complete')
+            " Enable omni-completion.
+            autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+            autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+            autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+            autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+            autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+            autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+            autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+
+        endif
+    " }
+
+    " Snippets {
+        if count(g:spf13_bundle_groups, 'neocomplcache') ||
+                    \ count(g:spf13_bundle_groups, 'neocomplete')
+
+            " Use honza's snippets.
+            let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+            " Enable neosnippet snipmate compatibility mode
+            let g:neosnippet#enable_snipmate_compatibility = 1
+
+            " For snippet_complete marker.
+            if !exists("g:spf13_no_conceal")
+                if has('conceal')
+                    set conceallevel=2 concealcursor=i
+                endif
+            endif
+
+            " Enable neosnippets when using go
+            let g:go_snippet_engine = "neosnippet"
+
+            " Disable the neosnippet preview candidate window
+            " When enabled, there can be too much visual noise
+            " especially when splits are used.
+            set completeopt-=preview
+        endif
+    " }
+
+    " gundo {
+        if isdirectory(expand("~/.vim/bundle/gundo.vim/"))
+            nnoremap <Leader>u :GundoToggle<CR>
+        endif
+    "}
+
+    " UndoTree {
+        if isdirectory(expand("~/.vim/bundle/undotree/"))
+            "nnoremap <Leader>u :UndotreeToggle<CR>
+            nnoremap    <F5>    :UndotreeToggle<CR>
+            " If undotree is opened, it is likely one wants to interact with it.
+            let g:undotree_SetFocusWhenToggle=1
+        endif
+    " }
+
+    " indent_guides {
+        if isdirectory(expand("~/.vim/bundle/vim-indent-guides/"))
+            let g:indent_guides_start_level = 2
+            let g:indent_guides_guide_size = 1
+            let g:indent_guides_enable_on_vim_startup = 1
+        endif
+    " }
+
+    " Wildfire {
+        let g:wildfire_objects = {
+                \ "*" : ["i'", 'i"', "i)", "i]", "i}", "ip"],
+                \ "html,xml" : ["at"],
+                \ }
+    " }
+
+    " vim-airline {
+        " Set configuration options for the statusline plugin vim-airline.
+        " Use the powerline theme and optionally enable powerline symbols.
+        " To use the symbols , , , , , , and .in the statusline
+        " segments add the following to your .vimrc.before file:
+        "   let g:airline_powerline_fonts=1
+        " If the previous symbols do not render for you then install a
+        " powerline enabled font.
+        if isdirectory(expand("~/.vim/bundle/vim-airline"))
+            "打开tabline功能,方便查看Buffer和切换，这个功能比较不错"
+            "我还省去了minibufexpl插件，因为我习惯在1个Tab下用多个buffer"
+            let g:airline#extensions#tabline#enabled = 1
+            let g:airline#extensions#tabline#buffer_nr_show = 1
+            "设置切换Buffer快捷键"
+            nnoremap <C-N> :bn<CR>
+            nnoremap <C-P> :bp<CR>
+            " 关闭状态显示空白符号计数,这个对我用处不大"
+            "let g:airline#extensions#whitespace#enabled = 0
+            "let g:airline#extensions#whitespace#symbol = '!'
+            "设置状态栏符号显示，下面编码用双引号"
+             let g:Powerline_symbols="fancy"
+             let g:airline_symbols = {}
+             let g:airline_left_sep = "\u2b80" 
+             let g:airline_left_alt_sep = "\u2b81"
+             let g:airline_right_sep = "\u2b82"
+             let g:airline_right_alt_sep = "\u2b83"
+             let g:airline_symbols.branch = "\u2b60"
+             let g:airline_symbols.readonly = "\u2b64"
+             let g:airline_symbols.linenr = "\u2b61"
+            "设置顶部tabline栏符号显示"
+            let g:airline#extensions#tabline#left_sep = "\u2b80"
+            let g:airline#extensions#tabline#left_alt_sep = "\u2b81"
+        endif
+        " See `:echo g:airline_theme_map` for some more choices
+        " Default in terminal vim is 'dark'
+        if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
+            if !exists('g:airline_theme')
+                ":w
+                "let g:airline_theme = 'solarized'
+                "let g:airline_theme = 'wombat'
+            endif
+            if !exists('g:airline_powerline_fonts')
+                " Use the default set of separators with a few customizations
+                "let g:airline_left_sep='›'   " Slightly fancier than '>'
+                "let g:airline_right_sep='‹'  " Slightly fancier than '<'
+                let g:airline_left_sep='>'   " Slightly fancier than '>'
+                let g:airline_right_sep='<'  " Slightly fancier than '<'
+            endif
+        endif
+    " }
+
+    " ctrlspace {
+        " Vim Workspace Controller
+        let g:airline_exclude_preview = 1
+        hi CtrlSpaceSelected guifg=#586e75 guibg=#eee8d5 guisp=#839496 gui=reverse,bold ctermfg=10 ctermbg=7 cterm=reverse,bold
+        hi CtrlSpaceNormal   guifg=#839496 guibg=#021B25 guisp=#839496 gui=NONE ctermfg=12 ctermbg=0 cterm=NONE
+        hi CtrlSpaceSearch   guifg=#cb4b16 guibg=NONE gui=bold ctermfg=9 ctermbg=NONE term=bold cterm=bold
+        hi CtrlSpaceStatus   guifg=#839496 guibg=#002b36 gui=reverse term=reverse cterm=reverse ctermfg=12 ctermbg=8
+    " }
 " }
 
-" Use local bundles config if available {
-    if filereadable(expand("~/.vimrc.bundles.local"))
-        source ~/.vimrc.bundles.local
-    endif
+" vim-plug end {
+    call plug#end()
 " }

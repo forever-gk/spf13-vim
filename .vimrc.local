@@ -1,0 +1,83 @@
+" Modeling and Notes {
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+" This file will be loaded at the end of .vimrc.
+" This file is designed to add your own vim scripts or override the Vim's .vimrc settings.
+" }
+
+"Add File Header {
+    " 定义函数AutoSetFileHead，自动插入文件头
+    autocmd BufNewFile *.sh,*.py exec ":call AutoSetFileHead()"
+    function! AutoSetFileHead()
+        "如果文件类型为.sh文件
+        if &filetype == 'sh'
+                call setline(1, "\#!/bin/bash")
+        endif
+        "如果文件类型为python
+        if &filetype == 'python'
+            call setline(1, "\#!/usr/bin/env python")
+            call append(1, "\# -*- coding: utf-8 -*-")
+        endif
+
+        normal G
+        normal o
+        normal o
+    endfunc
+
+    "this file add additional functions to vim
+    function AddTitle()
+        call append(0,"/*******************************************************************************")
+        "call append(1,"#")
+        call append(1," * Author :          gaokun")
+        "call append(3,"#")
+        call append(2," * Email :           822012699@qq.com")
+        "call append(5,"*")
+        call append(3," * Last modified :   ".strftime("%Y-%m-%d %H:%M"))
+        "call append(7,"#")
+        call append(4," * Filename :        ".expand("%:t"))
+        "call append(9,"#")
+        call append(5," * Description :     ")
+        ""call append(11,"#")
+        call append(6," * *****************************************************************************/")
+        echohl WarningMsg | echo "Successful in adding the copyright." | echohl None
+    endf
+
+    function UpdateTitle()
+        normal m'
+        execute '/* Last modified\s*:/s@:.*$@\=strftime(": %Y-%m-%d %H:%M")@'
+        normal "
+        normal mk
+        execute '/* Filename\s*:/s@:.*$@\=": ".expand("%:t")@'
+        execute "noh"
+        normal 'k
+        echohl WarningMsg | echo "Successful in updating the copy right." | echohl None
+    endfunction
+
+    "判断前10行代码里面，是否有Last modified这个单词，
+    "如果没有的话，代表没有添加过作者信息，需要新添加；
+    "如果有的话，那么只需要更新即可
+    function TitleDet()
+        let n=1
+        while n < 10
+            let line = getline(n)
+            if line =~'^\#\s*\S*Last\smodified:\S*.*$'
+                call UpdateTitle()
+                return
+            endif
+            let n = n + 1
+        endwhile
+        call AddTitle()
+    endfunction
+
+    map <F8> ms:call TitleDet()<cr>'s
+" }
+
+" Other {
+    " 设置可以高亮的关键字
+    if has("autocmd")
+      " Highlight TODO, FIXME, NOTE, etc.
+      if v:version > 701
+        autocmd Syntax * call matchadd('Todo',  '\W\zs\(TODO\|FIXME\|CHANGED\|DONE\|XXX\|BUG\|HACK\)')
+        autocmd Syntax * call matchadd('Debug', '\W\zs\(NOTE\|INFO\|IDEA\|NOTICE\)')
+      endif
+    endif"
+" }

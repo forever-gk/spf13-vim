@@ -1,0 +1,2 @@
+let g:vim_custom_path='~/.my_spf13_vim/'
+source ~/.spf13_vim_3/.vimrc
