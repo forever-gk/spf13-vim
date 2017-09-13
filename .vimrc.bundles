@@ -44,36 +44,25 @@
     " Dependence {
         "Plug 'gmarik/vundle'
         Plug 'flazz/vim-colorschemes'
-        Plug 'MarcWeber/vim-addon-mw-utils'  " snipMate 依赖组件
-        Plug 'tomtom/tlib_vim'               " snipMate 依赖组件
-        if executable('ag')
-            Plug 'mileszs/ack.vim'
-            let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
-        elseif executable('ack-grep')
-            let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-            Plug 'mileszs/ack.vim'
-        elseif executable('ack')
-            Plug 'mileszs/ack.vim'
-        endif
     " }
 
     " In your .vimrc.before file
     " list only the plugin groups you will use
     if !exists('g:spf13_bundle_groups')
-        let g:spf13_bundle_groups=['general', 'neocomplete',]
+        let g:spf13_bundle_groups=['general', 'neocomplete', 'programming',]
         "let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc', 'git',]
     endif
 
     " General {
         if count(g:spf13_bundle_groups, 'general')
             Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
-            "" 用于快速切换括号/引号或者标签
-            "" for repeat -> enhance surround.vim, . to repeat command
+            " 用于快速切换括号/引号或者标签
+            " for repeat -> enhance surround.vim, . to repeat command
             Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'							
             " Highlight, Jump and Resolve Conflict Markers Quickly in Vim
             Plug 'rhysd/conflict-marker.vim'
             " 动补全单引号，双引号等
-            Plug 'jiangmiao/auto-pairs'         "instead of Plug 'Raimondi/delimitMate'
+            Plug 'jiangmiao/auto-pairs'
             " quick locate file or function
             Plug 'ctrlpvim/ctrlp.vim' | Plug 'tacahiroy/ctrlp-funky'
             " 显示marks - 方便自己进行标记和跳转
@@ -82,30 +71,16 @@
             Plug 'terryma/vim-multiple-cursors'
             " ctrlspace
             Plug 'szw/vim-ctrlspace'
-            Plug 'vim-airline/vim-airline'
-            Plug 'vim-airline/vim-airline-themes'
-            " quick run
             " quickrun
             Plug 'thinca/vim-quickrun'
             Plug 'bling/vim-bufferline'
             Plug 'easymotion/vim-easymotion'
-            " gundo  edit history, 可以查看回到某个历史状态
+            "" gundo  edit history, 可以查看回到某个历史状态
             Plug 'sjl/gundo.vim'
             Plug 'mbbill/undotree'
             if !exists('g:spf13_no_views')
                 Plug 'vim-scripts/restore_view.vim'
             endif
-
-            "Plug 'mhinz/vim-signify'
-            ""快速替换字符串
-            "Plug 'tpope/vim-abolish'
-            "Plug 'osyo-manga/vim-over'
-            "Plug 'gcmt/wildfire.vim'
-
-            "Plug 'kana/vim-textobj-user'
-            "Plug 'kana/vim-textobj-indent'
-            "Plug 'kana/vim-textobj-line'
-            "Plug 'kana/vim-textobj-entire'
         endif
     " }
 
@@ -115,7 +90,7 @@
             Plug 'exvim/ex-visincr'
         endif
     " }
- 
+
     " Writing {
         if count(g:spf13_bundle_groups, 'writing')
             Plug 'reedes/vim-litecorrect'
@@ -143,7 +118,6 @@
     " Git {
         if count(g:spf13_bundle_groups, 'git')
             Plug 'tpope/vim-fugitive'
-            Plug 'mattn/webapi-vim'
             Plug 'mattn/gist-vim'
         endif
 
@@ -184,99 +158,9 @@
         endif
     " }
 
-    " Javascript {
-        if count(g:spf13_bundle_groups, 'javascript')
-            Plug 'elzr/vim-json'
-            Plug 'groenewege/vim-less'
-            Plug 'pangloss/vim-javascript'
-            Plug 'briancollins/vim-jst'
-            Plug 'kchmck/vim-coffee-script'
-        endif
-    " }
-
-    " Misc {
-        if count(g:spf13_bundle_groups, 'misc')
-            Plug 'rust-lang/rust.vim'
-            Plug 'tpope/vim-markdown'
-            Plug 'spf13/vim-preview'
-            Plug 'tpope/vim-cucumber'
-            Plug 'cespare/vim-toml'
-            Plug 'quentindecock/vim-cucumber-align-pipes'
-            Plug 'saltstack/salt-vim'
-        endif
-    " }
-
 " }
 
 " Plugins Setting {
-
-	" LargeFile {
-		if isdirectory(expand("~/.vim/bundle/LargeFile/"))
-			let g:LargeFile= 5 " files >= 5MB will use LargeFile rules
-		endif
-	" }
-
-    " TextObj Sentence {
-        if count(g:spf13_bundle_groups, 'writing')
-            augroup textobj_sentence
-              autocmd!
-              autocmd FileType markdown call textobj#sentence#init()
-              autocmd FileType textile call textobj#sentence#init()
-              autocmd FileType text call textobj#sentence#init()
-            augroup END
-        endif
-    " }
-
-    " TextObj Quote {
-        if count(g:spf13_bundle_groups, 'writing')
-            augroup textobj_quote
-                autocmd!
-                autocmd FileType markdown call textobj#quote#init()
-                autocmd FileType textile call textobj#quote#init()
-                autocmd FileType text call textobj#quote#init({'educate': 0})
-            augroup END
-        endif
-    " }
-
-    " Misc {
-        if isdirectory(expand("~/.vim/bundle/nerdtree"))
-            let g:NERDShutUp=1
-        endif
-        if isdirectory(expand("~/.vim/bundle/matchit.zip"))
-            let b:match_ignorecase = 1
-        endif
-    " }
-
-    " OmniComplete {
-        " To disable omni complete, add the following to your .vimrc.before file:
-        "   let g:spf13_no_omni_complete = 1
-        if !exists('g:spf13_no_omni_complete')
-            if has("autocmd") && exists("+omnifunc")
-                autocmd Filetype *
-                    \if &omnifunc == "" |
-                    \setlocal omnifunc=syntaxcomplete#Complete |
-                    \endif
-            endif
-
-            hi Pmenu  guifg=#000000 guibg=#F8F8F8 ctermfg=black ctermbg=Lightgray
-            hi PmenuSbar  guifg=#8A95A7 guibg=#F8F8F8 gui=NONE ctermfg=darkcyan ctermbg=lightgray cterm=NONE
-            hi PmenuThumb  guifg=#F8F8F8 guibg=#8A95A7 gui=NONE ctermfg=lightgray ctermbg=darkcyan cterm=NONE
-
-            " Some convenient mappings
-            "inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
-            if exists('g:spf13_map_cr_omni_complete')
-                inoremap <expr> <CR>     pumvisible() ? "\<C-y>" : "\<CR>"
-            endif
-            inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
-            inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
-            inoremap <expr> <C-d>      pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<C-d>"
-            inoremap <expr> <C-u>      pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<C-u>"
-
-            " Automatically open and close the popup menu / preview window
-            au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-            set completeopt=menu,preview,longest
-        endif
-    " }
 
     " Ctags {
         set tags=./tags;/,~/.vimtags
@@ -288,11 +172,6 @@
         endif
     " }
 
-    " AutoCloseTag {
-        " Make it so AutoCloseTag works for xml and xhtml files as well
-        au FileType xhtml,xml ru ftplugin/html/autoclosetag.vim
-        nmap <Leader>ac <Plug>ToggleAutoCloseMappings
-    " }
 
     " SnipMate {
         " Setting the author var
@@ -371,11 +250,6 @@
         endif
     "  }
 
-    " JSON {
-        nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
-        let g:vim_json_syntax_conceal = 0
-    " }
-
     " PyMode {
         " Disable if python support not present
         if !has('python') && !has('python3')
@@ -448,6 +322,9 @@
     " }
      " Fugitive {
         if isdirectory(expand("~/.vim/bundle/vim-fugitive/"))
+            if has('statusline')
+                set statusline+=%{fugitive#statusline()} " Git Hotness
+            endif
             nnoremap <silent> <leader>gs :Gstatus<CR>
             nnoremap <silent> <leader>gd :Gdiff<CR>
             nnoremap <silent> <leader>gc :Gcommit<CR>
@@ -691,57 +568,6 @@
                 \ "*" : ["i'", 'i"', "i)", "i]", "i}", "ip"],
                 \ "html,xml" : ["at"],
                 \ }
-    " }
-
-    " vim-airline {
-        " Set configuration options for the statusline plugin vim-airline.
-        " Use the powerline theme and optionally enable powerline symbols.
-        " To use the symbols , , , , , , and .in the statusline
-        " segments add the following to your .vimrc.before file:
-        "   let g:airline_powerline_fonts=1
-        " If the previous symbols do not render for you then install a
-        " powerline enabled font.
-        if isdirectory(expand("~/.vim/bundle/vim-airline"))
-            "打开tabline功能,方便查看Buffer和切换，这个功能比较不错"
-            "我还省去了minibufexpl插件，因为我习惯在1个Tab下用多个buffer"
-            let g:airline#extensions#tabline#enabled = 1
-            let g:airline#extensions#tabline#buffer_nr_show = 1
-            "设置切换Buffer快捷键"
-            nnoremap <C-N> :bn<CR>
-            nnoremap <C-P> :bp<CR>
-            " 关闭状态显示空白符号计数,这个对我用处不大"
-            "let g:airline#extensions#whitespace#enabled = 0
-            "let g:airline#extensions#whitespace#symbol = '!'
-            "设置状态栏符号显示，下面编码用双引号"
-             let g:Powerline_symbols="fancy"
-             let g:airline_symbols = {}
-             let g:airline_left_sep = "\u2b80" 
-             let g:airline_left_alt_sep = "\u2b81"
-             let g:airline_right_sep = "\u2b82"
-             let g:airline_right_alt_sep = "\u2b83"
-             let g:airline_symbols.branch = "\u2b60"
-             let g:airline_symbols.readonly = "\u2b64"
-             let g:airline_symbols.linenr = "\u2b61"
-            "设置顶部tabline栏符号显示"
-            let g:airline#extensions#tabline#left_sep = "\u2b80"
-            let g:airline#extensions#tabline#left_alt_sep = "\u2b81"
-        endif
-        " See `:echo g:airline_theme_map` for some more choices
-        " Default in terminal vim is 'dark'
-        if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
-            if !exists('g:airline_theme')
-                ":w
-                "let g:airline_theme = 'solarized'
-                "let g:airline_theme = 'wombat'
-            endif
-            if !exists('g:airline_powerline_fonts')
-                " Use the default set of separators with a few customizations
-                "let g:airline_left_sep='›'   " Slightly fancier than '>'
-                "let g:airline_right_sep='‹'  " Slightly fancier than '<'
-                let g:airline_left_sep='>'   " Slightly fancier than '>'
-                let g:airline_right_sep='<'  " Slightly fancier than '<'
-            endif
-        endif
     " }
 
     " ctrlspace {

@@ -227,6 +227,7 @@
                 set guifont=Monaco:h9,Mono:h10,Menlo:h10,Consolas\ for\ Powerline\ FixedD:h10,Courier_New:h10
             endif
         endif
+        color desert             " Load a colorscheme
         if filereadable(expand("~/.vim/bundle/vim-colorschemes/colors/solarized.vim"))
             let g:solarized_termcolors=256
             let g:solarized_termtrans=1
@@ -235,10 +236,12 @@
             color solarized             " Load a colorscheme
         endif
     else
-        "if &term == 'xterm' || &term == 'screen'
-        "    set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
-        "endif
-        "set term=builtin_ansi       " Make arrow and other keys work
+        if !WINDOWS()
+            if &term == 'xterm' || &term == 'screen'
+                set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
+            endif
+            set term=builtin_ansi       " Make arrow and other keys work
+        endif
     endif
 
     set tabpagemax=15               " Only show 15 tabs
@@ -259,13 +262,9 @@
 
     if has('statusline')
         set laststatus=2
-
         " Broken down into easily includeable segments
         set statusline=%<%f\                     " Filename
         set statusline+=%w%h%m%r                 " Options
-        if count(g:spf13_bundle_groups,'git') && isdirectory(expand("~/.vim/bundle/vim-fugitive"))
-            set statusline+=%{fugitive#statusline()} " Git Hotness
-        endif
         set statusline+=\ [%{&ff}/%Y]            " Filetype
         set statusline+=\ [%{getcwd()}]          " Current dir
         set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
@@ -304,10 +303,6 @@
     "set matchpairs+=<:>             " Match, to be used with %
     set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
     "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
-    " Remove trailing whitespaces and ^M chars
-    " To disable the stripping of whitespace, add the following to your
-    " .vimrc.before file:
-    "   let g:spf13_keep_trailing_whitespace = 1
     autocmd FileType c,cpp,java,go,php,javascript,python,twig,xml,yml,perl,sql autocmd BufWritePre <buffer> if !exists('g:spf13_keep_trailing_whitespace') | call StripTrailingWhitespace() | endif
     "autocmd FileType go autocmd BufWritePre <buffer> Fmt
     autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
