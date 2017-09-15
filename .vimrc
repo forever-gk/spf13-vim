@@ -218,6 +218,7 @@
 
     " GVIM- (here instead of .gvimrc)
     if has('gui_running')
+        set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
         set lines=40                " 40 lines of text instead of 24
         if !exists("g:spf13_no_big_font")
@@ -249,7 +250,6 @@
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
 
-    set cursorline                  " Highlight current line
 
     highlight clear SignColumn      " SignColumn should match background
     highlight clear LineNr          " Current line number row will have same background color in relative mode
@@ -287,6 +287,13 @@
     set scrolljump=5                " Lines to scroll when cursor leaves screen
     set scrolloff=3                 " Minimum lines to keep above and below cursor
     set foldenable                  " Auto fold code
+    set foldmethod=indent           "set default foldmethod
+                    "manual           手工定义折叠
+                    "indent             更多的缩进表示更高级别的折叠
+                    "expr                用表达式来定义折叠
+                    "syntax             用语法高亮来定义折叠
+                    "diff                  对没有更改的文本进行折叠
+                    "marker            对文中的标志折叠
     set list
     set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
