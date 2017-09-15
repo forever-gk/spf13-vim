@@ -32,17 +32,12 @@
         let mapleader = ','
         let maplocalleader = '_'
 
-    " Disable easier moving in tabs and windows
-    "   let g:spf13_no_easyWindows = 1
 
     " Disable wrap relative motion for start/end line motions
     "   let g:spf13_no_wrapRelMotion = 1
 
     " Disable fast tab navigation
     "   let g:spf13_no_fastTabs = 1
-
-    " Clear search highlighting
-    "   let g:spf13_clear_search_highlight = 1
 
     " Disable neosnippet expansion
     " This maps over <C-k> and does some Supertab
@@ -51,8 +46,5 @@
 
     " Disable whitespace stripping
        let g:spf13_keep_trailing_whitespace = 1
-
-    " Enable powerline symbols
-       let g:airline_powerline_fonts = 1
 
 " }

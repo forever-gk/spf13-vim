@@ -117,7 +117,6 @@
 
     " Git {
         if count(g:spf13_bundle_groups, 'git')
-            Plug 'tpope/vim-fugitive'
             Plug 'mattn/gist-vim'
         endif
 
@@ -568,15 +567,6 @@
                 \ "*" : ["i'", 'i"', "i)", "i]", "i}", "ip"],
                 \ "html,xml" : ["at"],
                 \ }
-    " }
-
-    " ctrlspace {
-        " Vim Workspace Controller
-        let g:airline_exclude_preview = 1
-        hi CtrlSpaceSelected guifg=#586e75 guibg=#eee8d5 guisp=#839496 gui=reverse,bold ctermfg=10 ctermbg=7 cterm=reverse,bold
-        hi CtrlSpaceNormal   guifg=#839496 guibg=#021B25 guisp=#839496 gui=NONE ctermfg=12 ctermbg=0 cterm=NONE
-        hi CtrlSpaceSearch   guifg=#cb4b16 guibg=NONE gui=bold ctermfg=9 ctermbg=NONE term=bold cterm=bold
-        hi CtrlSpaceStatus   guifg=#839496 guibg=#002b36 gui=reverse term=reverse cterm=reverse ctermfg=12 ctermbg=8
     " }
 " }
 

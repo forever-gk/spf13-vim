@@ -151,7 +151,6 @@
     set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
     set virtualedit=onemore             " Allow for cursor beyond last character
     set history=1000                    " Store a ton of history (default is 20)
-    set spell                           " Spell checking on
     set hidden                          " Allow buffer switching without saving
     set iskeyword-=.                    " '.' is an end of word designator
     set iskeyword-=#                    " '#' is an end of word designator
@@ -203,6 +202,7 @@
 " }
 
 " Vim UI {
+    set spell                           " Spell checking on
     set background=dark
     " Allow to trigger background
     function! ToggleBG()
@@ -243,7 +243,7 @@
             if &term == 'xterm' || &term == 'screen'
                 set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
             endif
-            set term=builtin_ansi       " Make arrow and other keys work
+            "set term=builtin_ansi       " Make arrow and other keys work
         endif
     endif
 
@@ -251,8 +251,8 @@
     set showmode                    " Display the current mode
 
 
-    highlight clear SignColumn      " SignColumn should match background
-    highlight clear LineNr          " Current line number row will have same background color in relative mode
+    "highlight clear SignColumn      " SignColumn should match background
+    "highlight clear LineNr          " Current line number row will have same background color in relative mode
     "highlight clear CursorLineNr    " Remove highlight color from current line number
 
     if has('cmdline_info')
@@ -289,11 +289,11 @@
     set foldenable                  " Auto fold code
     set foldmethod=indent           "set default foldmethod
                     "manual           手工定义折叠
-                    "indent             更多的缩进表示更高级别的折叠
-                    "expr                用表达式来定义折叠
-                    "syntax             用语法高亮来定义折叠
-                    "diff                  对没有更改的文本进行折叠
-                    "marker            对文中的标志折叠
+                    "indent           更多的缩进表示更高级别的折叠
+                    "expr             用表达式来定义折叠
+                    "syntax           用语法高亮来定义折叠
+                    "diff             对没有更改的文本进行折叠
+                    "marker           对文中的标志折叠
     set list
     set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
 
@@ -321,17 +321,6 @@
 " }
 
 " Key (re)Mappings {
-    " Easier moving in tabs and windows
-    " The lines conflict with the default digraph mapping of <C-K>
-    " If you prefer that functionality, add the following to your
-    " .vimrc.before.local file:
-    "   let g:spf13_no_easyWindows = 1
-    if !exists('g:spf13_no_easyWindows')
-        map <C-J> <C-W>j<C-W>_
-        map <C-K> <C-W>k<C-W>_
-        map <C-L> <C-W>l<C-W>_
-        map <C-H> <C-W>h<C-W>_
-    endif
 
     " Wrapped lines goes down/up to next row, rather than next line in file.
     noremap j gj
@@ -352,12 +341,8 @@
     " Most prefer to toggle search highlighting rather than clear the current
     " search results. To clear search highlighting rather than toggle it on
     " and off, add the following to your .vimrc.before.local file:
-    "   let g:spf13_clear_search_highlight = 1
-    if exists('g:spf13_clear_search_highlight')
-        nmap <silent> <leader>/ :nohlsearch<CR>
-    else
-        nmap <silent> <leader>/ :set invhlsearch<CR>
-    endif
+    nmap <silent> <leader>/ :nohlsearch<CR>
+    nmap <silent> <leader>/ :set invhlsearch<CR>
 
 " }
 
