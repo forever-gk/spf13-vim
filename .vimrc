@@ -216,7 +216,7 @@
     noremap <leader>bg :call ToggleBG()<CR>
     set nospell
     " GVIM- (here instead of .gvimrc)
-    if has('gui_running')
+    if has("gui_running")
         set spell                   " Spell checking on
         set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
