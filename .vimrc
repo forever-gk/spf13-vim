@@ -214,7 +214,7 @@
         endif
     endfunction
     noremap <leader>bg :call ToggleBG()<CR>
-
+    set nospell
     " GVIM- (here instead of .gvimrc)
     if has('gui_running')
         set spell                   " Spell checking on
