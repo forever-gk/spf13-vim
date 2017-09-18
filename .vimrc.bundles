@@ -77,7 +77,6 @@
             Plug 'easymotion/vim-easymotion'
             "" gundo  edit history, 可以查看回到某个历史状态
             Plug 'sjl/gundo.vim'
-            Plug 'mbbill/undotree'
             if !exists('g:spf13_no_views')
                 Plug 'vim-scripts/restore_view.vim'
             endif
