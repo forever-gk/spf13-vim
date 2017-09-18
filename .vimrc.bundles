@@ -69,8 +69,6 @@
             Plug 'kshenoy/vim-signature'
             Plug 'aperezdc/vim-template' "代码模版
             Plug 'terryma/vim-multiple-cursors'
-            " ctrlspace
-            Plug 'szw/vim-ctrlspace'
             " quickrun
             Plug 'thinca/vim-quickrun'
             Plug 'bling/vim-bufferline'
