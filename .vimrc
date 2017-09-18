@@ -202,7 +202,6 @@
 " }
 
 " Vim UI {
-    set spell                           " Spell checking on
     set background=dark
     " Allow to trigger background
     function! ToggleBG()
@@ -218,6 +217,7 @@
 
     " GVIM- (here instead of .gvimrc)
     if has('gui_running')
+        set spell                   " Spell checking on
         set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
         set lines=40                " 40 lines of text instead of 24
