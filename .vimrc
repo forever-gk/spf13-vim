@@ -202,7 +202,6 @@
 " }
 
 " Vim UI {
-    set background=dark
     " Allow to trigger background
     function! ToggleBG()
         let s:tbg = &background
@@ -217,6 +216,7 @@
     set nospell
     " GVIM- (here instead of .gvimrc)
     if has("gui_running")
+    	set background=dark
         set spell                   " Spell checking on
         set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
@@ -251,9 +251,9 @@
     set showmode                    " Display the current mode
 
 
-    "highlight clear SignColumn      " SignColumn should match background
-    "highlight clear LineNr          " Current line number row will have same background color in relative mode
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
+    highlight clear SignColumn      " SignColumn should match background
+    highlight clear LineNr          " Current line number row will have same background color in relative mode
+    highlight clear CursorLineNr    " Remove highlight color from current line number
 
     if has('cmdline_info')
         set ruler                   " Show the ruler

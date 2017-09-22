@@ -67,8 +67,6 @@
             Plug 'kshenoy/vim-signature'
             Plug 'aperezdc/vim-template' "代码模版
             Plug 'terryma/vim-multiple-cursors'
-            " quickrun
-            Plug 'thinca/vim-quickrun'
             Plug 'bling/vim-bufferline'
             Plug 'easymotion/vim-easymotion'
             "" gundo  edit history, 可以查看回到某个历史状态
