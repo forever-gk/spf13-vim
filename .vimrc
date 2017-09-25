@@ -213,11 +213,17 @@
     endfunction
     noremap <leader>bg :call ToggleBG()<CR>
     set background=dark
-    set nospell
+    set spell                   " Spell checking on
+    color desert             " Load a colorscheme
+    if filereadable(expand("~/.vim/bundle/vim-colorschemes/colors/solarized.vim"))
+        let g:solarized_termcolors=256
+        let g:solarized_termtrans=1
+        let g:solarized_contrast="normal"
+        let g:solarized_visibility="normal"
+        color solarized             " Load a colorscheme
+    endif
     " GVIM- (here instead of .gvimrc)
     if has("gui_running")
-    	
-        set spell                   " Spell checking on
         set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
         set lines=40                " 40 lines of text instead of 24
@@ -230,14 +236,7 @@
                 set guifont=Monaco:h9,Mono:h10,Menlo:h10,Consolas\ for\ Powerline\ FixedD:h10,Courier_New:h10
             endif
         endif
-        color desert             " Load a colorscheme
-        if filereadable(expand("~/.vim/bundle/vim-colorschemes/colors/solarized.vim"))
-            let g:solarized_termcolors=256
-            let g:solarized_termtrans=1
-            let g:solarized_contrast="normal"
-            let g:solarized_visibility="normal"
-            color solarized             " Load a colorscheme
-        endif
+        
     else
         if !WINDOWS()
             if &term == 'xterm' || &term == 'screen'
