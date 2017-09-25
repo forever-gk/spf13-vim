@@ -212,10 +212,11 @@
         endif
     endfunction
     noremap <leader>bg :call ToggleBG()<CR>
+    set background=dark
     set nospell
     " GVIM- (here instead of .gvimrc)
     if has("gui_running")
-    	set background=dark
+    	
         set spell                   " Spell checking on
         set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
