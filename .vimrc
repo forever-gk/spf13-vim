@@ -215,13 +215,6 @@
     set background=dark
     set spell                   " Spell checking on
     color desert             " Load a colorscheme
-    if filereadable(expand("~/.vim/bundle/vim-colorschemes/colors/solarized.vim"))
-        let g:solarized_termcolors=256
-        let g:solarized_termtrans=1
-        let g:solarized_contrast="normal"
-        let g:solarized_visibility="normal"
-        color solarized             " Load a colorscheme
-    endif
     " GVIM- (here instead of .gvimrc)
     if has("gui_running")
         set cursorline              " Highlight current line
@@ -236,7 +229,13 @@
                 set guifont=Monaco:h9,Mono:h10,Menlo:h10,Consolas\ for\ Powerline\ FixedD:h10,Courier_New:h10
             endif
         endif
-        
+        if filereadable(expand("~/.vim/bundle/vim-colorschemes/colors/solarized.vim"))
+            let g:solarized_termcolors=256
+            let g:solarized_termtrans=1
+            let g:solarized_contrast="normal"
+            let g:solarized_visibility="normal"
+            color solarized             " Load a colorscheme
+        endif
     else
         if !WINDOWS()
             if &term == 'xterm' || &term == 'screen'

@@ -68,6 +68,7 @@
             Plug 'aperezdc/vim-template' "代码模版
             Plug 'terryma/vim-multiple-cursors'
             Plug 'bling/vim-bufferline'
+            Plug 'vim-scripts/sessionman.vim'
             Plug 'easymotion/vim-easymotion'
             "" gundo  edit history, 可以查看回到某个历史状态
             Plug 'sjl/gundo.vim'
