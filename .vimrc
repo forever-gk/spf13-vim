@@ -213,13 +213,14 @@
     endfunction
     noremap <leader>bg :call ToggleBG()<CR>
     set background=dark
-    set spell                   " Spell checking on
+    set nospell
     color desert             " Load a colorscheme
     " GVIM- (here instead of .gvimrc)
     if has("gui_running")
         set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
         set lines=40                " 40 lines of text instead of 24
+        set spell                   " Spell checking on
         if !exists("g:spf13_no_big_font")
             if LINUX() && has("gui_running")
                 set guifont=Monaco\ for\ Powerline\ 10,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
