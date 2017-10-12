@@ -125,7 +125,7 @@
 " General {
     filetype plugin indent on   " Automatically detect file types.
     syntax on                   " Syntax highlighting
-    set mouse=a                 " Automatically enable mouse usage
+    set mouse-=a                 " Automatically enable mouse usage
     set mousehide               " Hide the mouse cursor while typing
     scriptencoding utf-8
 
@@ -221,6 +221,7 @@
         set guioptions-=T           " Remove the toolbar
         set lines=40                " 40 lines of text instead of 24
         set spell                   " Spell checking on
+        set mouse=a                 " Automatically enable mouse usage
         if !exists("g:spf13_no_big_font")
             if LINUX() && has("gui_running")
                 set guifont=Monaco\ for\ Powerline\ 10,Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
