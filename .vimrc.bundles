@@ -55,6 +55,7 @@
 
     " General {
         if count(g:spf13_bundle_groups, 'general')
+            Plug 'jlanzarotta/bufexplorer'
             Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
             " 用于快速切换括号/引号或者标签
             " for repeat -> enhance surround.vim, . to repeat command
