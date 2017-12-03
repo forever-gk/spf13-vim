@@ -157,6 +157,9 @@
 " Plugins Setting {
 
     " Ctags {
+        map <F5> :!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q .<CR><CR> :TlistUpdate<CR>
+        imap <F5> <ESC>:!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q .<CR><CR> :TlistUpdate<CR>
+
         set tags=./tags;/,~/.vimtags
 
         " Make tags placed in .git/tags file available in all levels of a repository
