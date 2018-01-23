@@ -57,21 +57,16 @@
         if count(g:spf13_bundle_groups, 'general')
             Plug 'jlanzarotta/bufexplorer'
             Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
-            " 用于快速切换括号/引号或者标签
-            " for repeat -> enhance surround.vim, . to repeat command
             Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'							
-            " Highlight, Jump and Resolve Conflict Markers Quickly in Vim
             Plug 'rhysd/conflict-marker.vim'
-            " 动补全单引号，双引号等
             Plug 'jiangmiao/auto-pairs'
-            " 显示marks - 方便自己进行标记和跳转
             Plug 'kshenoy/vim-signature'
             Plug 'aperezdc/vim-template' "代码模版
             Plug 'terryma/vim-multiple-cursors'
             Plug 'bling/vim-bufferline'
             Plug 'vim-scripts/sessionman.vim'
             Plug 'easymotion/vim-easymotion'
-            "" gundo  edit history, 可以查看回到某个历史状态
+            Plug 'nathanaelkane/vim-indent-guides'
             Plug 'sjl/gundo.vim'
             if !exists('g:spf13_no_views')
                 Plug 'vim-scripts/restore_view.vim'
@@ -168,7 +163,6 @@
         "    let &tags = &tags . ',' . gitroot . '/.git/tags'
         "endif
     " }
-
 
     " SnipMate {
         " Setting the author var
@@ -496,6 +490,7 @@
                 \ "html,xml" : ["at"],
                 \ }
     " }
+
 " }
 
 " vim-plug end {
