@@ -68,6 +68,7 @@
             Plug 'easymotion/vim-easymotion'
             Plug 'nathanaelkane/vim-indent-guides'
             Plug 'sjl/gundo.vim'
+            Plug 'ervandew/supertab'
             if !exists('g:spf13_no_views')
                 Plug 'vim-scripts/restore_view.vim'
             endif
