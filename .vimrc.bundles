@@ -63,12 +63,13 @@
             Plug 'kshenoy/vim-signature'
             Plug 'aperezdc/vim-template' "代码模版
             Plug 'terryma/vim-multiple-cursors'
-            Plug 'bling/vim-bufferline'
+            "Plug 'ervandew/supertab'
             Plug 'vim-scripts/sessionman.vim'
             Plug 'easymotion/vim-easymotion'
             Plug 'nathanaelkane/vim-indent-guides'
+            Plug 'vim-airline/vim-airline'
+            Plug 'vim-airline/vim-airline-themes'
             Plug 'sjl/gundo.vim'
-            Plug 'ervandew/supertab'
             if !exists('g:spf13_no_views')
                 Plug 'vim-scripts/restore_view.vim'
             endif
@@ -427,7 +428,7 @@
             let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
             let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\h\w*\|\h\w*::'
     " }
-    "
+
     " Normal Vim omni-completion {
     " To disable omni complete, add the following to your .vimrc.before file:
     "   let g:spf13_no_omni_complete = 1
@@ -468,6 +469,29 @@
             " When enabled, there can be too much visual noise
             " especially when splits are used.
             set completeopt-=preview
+        endif
+    " }
+
+    " vim-airline {
+        " Set configuration options for the statusline plugin vim-airline.
+        " Use the powerline theme and optionally enable powerline symbols.
+        " To use the symbols , , , , , , and .in the statusline
+        " segments add the following to your .vimrc.before.local file:
+        "   let g:airline_powerline_fonts=1
+        " If the previous symbols do not render for you then install a
+        " powerline enabled font.
+
+        " See `:echo g:airline_theme_map` for some more choices
+        " Default in terminal vim is 'dark'
+        if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
+            if !exists('g:airline_theme')
+                let g:airline_theme = 'solarized'
+            endif
+            if !exists('g:airline_powerline_fonts')
+                " Use the default set of separators with a few customizations
+                let g:airline_left_sep='›'  " Slightly fancier than '>'
+                let g:airline_right_sep='‹' " Slightly fancier than '<'
+            endif
         endif
     " }
 
