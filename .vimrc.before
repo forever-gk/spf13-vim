@@ -18,7 +18,16 @@
 "
 "   You can find me at http://spf13.com
 " }
-" spf13 options { 
+" spf13 options {
+"
+    "
+    let $VIMHOME=expand( $HOME . '/.vim/' )
+
+    "
+    let $USRPLGD=expand( $VIMHOME . 'bundle/' )
+
+    let g:snips_author = 'Kevin Gao <gaokunforever@gmail.com>'
+
     " Prevent automatically changing to open file directory
     "   let g:spf13_no_autochdir = 1
 
@@ -31,7 +40,6 @@
     " character) add the following to your .vimrc.before.local file:
         let mapleader = ','
         let maplocalleader = '_'
-
 
     " Disable wrap relative motion for start/end line motions
     "   let g:spf13_no_wrapRelMotion = 1

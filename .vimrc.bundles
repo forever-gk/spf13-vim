@@ -21,29 +21,21 @@
 "   You can find me at http://spf13.com
 " }
 
-" Bundles Prepare {
+" Bundles Prepare {{{
     " Setup vim-plug Support {
-        " set the runtime path to include Vundle
-        if empty(glob('~/.vim/autoload/plug.vim'))
-            silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        set rtp+=$VIMHOME
+        if empty(glob(expand($VIMHOME . 'autoload/plug.vim')))
+            silent !curl -fLo $VIMHOME/autoload/plug.vim --create-dirs
                     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
             autocmd VimEnter * PlugInstall | source $MYVIMRC
         endif
-        if exists('g:exvim_custom_path')
-            exec 'set rtp+=' . fnameescape ( g:exvim_custom_path.'/.vim/bundle/Vundle' )
-            call plug#begin(g:exvim_custom_path.'/.vim/bundle/')
-        else
-        	set rtp+=~/.vim/bundle/
-        	call plug#begin('~/.vim/bundle/')
-        endif
+        call plug#begin($USRPLGD)
     " }
-" }
+" }}}
 
-" Plugins {
+" Plugins {{{
 
     " Dependence {
-        "Plug 'gmarik/vundle'
-        Plug 'flazz/vim-colorschemes'
     " }
 
     " In your .vimrc.before file
@@ -55,21 +47,25 @@
 
     " General {
         if count(g:spf13_bundle_groups, 'general')
-            Plug 'jlanzarotta/bufexplorer'
+            Plug 'flazz/vim-colorschemes'
+            "Plug 'jlanzarotta/bufexplorer'
             Plug 'scrooloose/nerdtree' | Plug 'jistr/vim-nerdtree-tabs'
-            Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'							
+            Plug 'tpope/vim-surround' | Plug 'tpope/vim-repeat'
             Plug 'rhysd/conflict-marker.vim'
             Plug 'jiangmiao/auto-pairs'
             Plug 'kshenoy/vim-signature'
             Plug 'aperezdc/vim-template' "代码模版
             Plug 'terryma/vim-multiple-cursors'
-            "Plug 'ervandew/supertab'
             Plug 'vim-scripts/sessionman.vim'
             Plug 'easymotion/vim-easymotion'
-            Plug 'nathanaelkane/vim-indent-guides'
+            Plug 'Yggdroot/indentLine'
             Plug 'vim-airline/vim-airline'
             Plug 'vim-airline/vim-airline-themes'
             Plug 'sjl/gundo.vim'
+            Plug 'vim-ctrlspace/vim-ctrlspace'
+            "Plug 'thaerkh/vim-workspace'
+            "Plug 'ervandew/supertab'
+            "Plug 'nathanaelkane/vim-indent-guides'
             if !exists('g:spf13_no_views')
                 Plug 'vim-scripts/restore_view.vim'
             endif
@@ -149,9 +145,9 @@
         endif
     " }
 
-" }
+" }}}
 
-" Plugins Setting {
+" Plugins Setting {{{
 
     " Ctags {
         map <F5> :!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q .<CR><CR> :TlistUpdate<CR>
@@ -173,7 +169,7 @@
     " }
 
     " NerdTree NerdTreeTab{
-        if isdirectory(expand("~/.vim/bundle/nerdtree"))
+        if isdirectory($USRPLGD . 'nerdtree')
             map <C-e> <plug>NERDTreeTabsToggle<CR>
             map <leader>e :NERDTreeFind<CR>
             nmap <leader>nt :NERDTreeFind<CR>
@@ -203,7 +199,7 @@
     " }
 
     " Tabularize {
-        if isdirectory(expand("~/.vim/bundle/tabular"))
+        if isdirectory($USRPLGD . 'tabular')
             nmap <Leader>a& :Tabularize /&<CR>
             vmap <Leader>a& :Tabularize /&<CR>
             nmap <Leader>a= :Tabularize /^[^=]*\zs=<CR>
@@ -224,7 +220,7 @@
     " }
 
     " vim-easy-align {
-    if isdirectory(expand("~/.vim/bundle/vim-easy-align"))
+    if isdirectory($USRPLGD . 'vim-easy-align')
         vmap <Leader>a <Plug>(EasyAlign)
         nmap <Leader>a <Plug>(EasyAlign)
         if !exists('g:easy_align_delimiters')
@@ -234,9 +230,9 @@
     endif
     " }
 
-    " Session List {
+    " Sessionman {
         set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize
-        if isdirectory(expand("~/.vim/bundle/sessionman.vim/"))
+        if isdirectory($USRPLGD . 'sessionman.vim')
             nmap <leader>sl :SessionList<CR>
             nmap <leader>ss :SessionSave<CR>
             nmap <leader>sc :SessionClose<CR>
@@ -249,8 +245,8 @@
             let g:pymode = 0
         endif
 
-        if isdirectory(expand("~/.vim/bundle/python-mode"))
-            let g:pymode_lint_checkers = ['pyflakes']
+        if isdirectory($USRPLGD . 'python-mode')
+           let g:pymode_lint_checkers = ['pyflakes']
             let g:pymode_trim_whitespaces = 0
             let g:pymode_options = 0
             let g:pymode_rope = 0
@@ -258,7 +254,7 @@
     " }
 
     " TagBar {
-        if isdirectory(expand("~/.vim/bundle/tagbar/"))
+        if isdirectory($USRPLGD . 'tagbar')
             nnoremap <silent> <leader>tt :TagbarToggle<CR>
             let g:tagbar_autofocus = 1
             " let g:tagbar_autoshowtag = 1
@@ -266,8 +262,18 @@
         endif
     "}
 
+    " ctrlspace {{{
+        if isdirectory($USRPLGD . 'vim-ctrlspace')
+            let g:airline_exclude_preview = 1
+            hi CtrlSpaceSelected guifg=#586e75 guibg=#eee8d5 guisp=#839496 gui=reverse,bold ctermfg=10 ctermbg=7 cterm=reverse,bold
+            hi CtrlSpaceNormal   guifg=#839496 guibg=#021B25 guisp=#839496 gui=NONE ctermfg=12 ctermbg=0 cterm=NONE
+            hi CtrlSpaceSearch   guifg=#cb4b16 guibg=NONE gui=bold ctermfg=9 ctermbg=NONE term=bold cterm=bold
+            hi CtrlSpaceStatus   guifg=#839496 guibg=#002b36 gui=reverse term=reverse cterm=reverse ctermfg=12 ctermbg=8
+        endif
+    " }}}
+
     " Rainbow {
-        if isdirectory(expand("~/.vim/bundle/rainbow/"))
+        if isdirectory($USRPLGD . 'rainbow')
             let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
         endif
     " }
@@ -476,14 +482,23 @@
         " Set configuration options for the statusline plugin vim-airline.
         " Use the powerline theme and optionally enable powerline symbols.
         " To use the symbols , , , , , , and .in the statusline
-        " segments add the following to your .vimrc.before.local file:
-        "   let g:airline_powerline_fonts=1
+        " segments add the following to your config local file:
         " If the previous symbols do not render for you then install a
         " powerline enabled font.
-
         " See `:echo g:airline_theme_map` for some more choices
         " Default in terminal vim is 'dark'
-        if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
+        if isdirectory($USRPLGD . 'vim-airline')
+            let g:airline_powerline_fonts = 1
+            let g:airline#extensions#tabline#enabled = 1
+            let g:airline#extensions#tabline#buffer_nr_show = 1
+            "let g:airline_theme='powerlineish'
+            "let g:Powerline_symbols= 'fancy'
+            "
+            if !exists('g:airline_symbols')
+                let g:airline_symbols = {}
+            endif
+        endif
+        if isdirectory($USRPLGD . 'vim-airline-themes')
             if !exists('g:airline_theme')
                 let g:airline_theme = 'solarized'
             endif
@@ -496,27 +511,26 @@
     " }
 
     " gundo {
-        if isdirectory(expand("~/.vim/bundle/gundo.vim/"))
+        if isdirectory($USRPLGD . 'gundo.vim')
             nnoremap <Leader>u :GundoToggle<CR>
         endif
     "}
 
     " indent_guides {
-        if isdirectory(expand("~/.vim/bundle/vim-indent-guides/"))
+        if isdirectory($USRPLGD . 'vim-indent-guides')
             let g:indent_guides_start_level = 2
             let g:indent_guides_guide_size = 1
             let g:indent_guides_enable_on_vim_startup = 1
         endif
     " }
 
-    " Wildfire {
+    " Wildfire {{{
         let g:wildfire_objects = {
                 \ "*" : ["i'", 'i"', "i)", "i]", "i}", "ip"],
                 \ "html,xml" : ["at"],
                 \ }
-    " }
-
-" }
+    " }}}
+" }}}
 
 " vim-plug end {
     call plug#end()

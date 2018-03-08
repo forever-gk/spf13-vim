@@ -29,9 +29,10 @@
 "   limitations under the License.
 " }
 
-" Environment {
+" Environment {{{
     let mapleader = ','
     let maplocalleader = '_'
+
     " Identify platform {
         silent function! OSX()
             return has('macunix')
@@ -57,12 +58,12 @@
         " Let Vim use utf-8 internally, because many scripts require this
         set encoding=utf-8
         set termencoding=utf-8
-        setglobal fileencoding=utf-8
+        set fileencoding=utf-8
         " Windows has traditionally used cp1252, so it's probably wise to
         " fallback into cp1252 instead of eg. iso-8859-15.
         " Newer Windows files might contain utf-8 or utf-16 LE so we might
         " want to try them first.
-        set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
+        set fileencodings=ucs-bom,utf-8,chinese,cp936,gb18030,big5,euc-jp,euc-kr,latin1utf-16le,cp1252,iso-8859-15
     " }
 
     " Windows Compatible {
@@ -75,10 +76,12 @@
         endif
         " Be nice and check for multi_byte even if the config requires
         " multi_byte support most of the time
-        if has("multi_byte")
-            " Windows cmd.exe still uses cp850. If Windows ever moved to
-            " Powershell as the primary terminal, this would be utf-8
-            set termencoding=cp850
+        if WINDOWS()
+            if has("multi_byte")
+                " Windows cmd.exe still uses cp850. If Windows ever moved to
+                " Powershell as the primary terminal, this would be utf-8
+                set termencoding=cp850
+            endif
         endif
     " }
 
@@ -88,8 +91,7 @@
             inoremap <silent> <C-[>OC <RIGHT>
         endif
     " }
-
-" }
+" }}}
 
 " Use before config {
     if exists('g:vim_custom_path')
@@ -102,7 +104,7 @@
     endif
 " }
 
-" Use bundles config {
+" Use bundles config {{{
     " load .vimrc.bundles & .vimrc.bundles.local
     if exists('g:vim_custom_path')
         let vimrc_plugins_path = g:vim_custom_path.'/.vimrc.bundles'
@@ -119,10 +121,9 @@
     filetype on
     filetype plugin on
     filetype plugin indent on " required
+" }}}
 
-" }
-
-" General {
+" General {{{
     filetype plugin indent on   " Automatically detect file types.
     syntax on                   " Syntax highlighting
     set mouse-=a                 " Automatically enable mouse usage
@@ -197,10 +198,9 @@
                 \ ]
         endif
     " }
+" }}}
 
-" }
-
-" Vim UI {
+" Vim UI {{{
     " Allow to trigger background
     function! ToggleBG()
         let s:tbg = &background
@@ -228,7 +228,7 @@
             elseif OSX() && has("gui_running")
                 set guifont=Monaco\ for\ Powerline\ 10:Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
             elseif WINDOWS() && has("gui_running")
-                set guifont=Monaco:h9,Mono:h10,Menlo:h10,Consolas\ for\ Powerline\ FixedD:h10,Courier_New:h10
+                set guifont=Monaco\ for\ Powerline:h9,Mono:h10,Menlo:h10,Consolas\ for\ Powerline\ FixedD:h10,Courier_New:h10
             endif
         endif
         if filereadable(expand("~/.vim/bundle/vim-colorschemes/colors/solarized.vim"))
@@ -296,10 +296,9 @@
                     "marker           对文中的标志折叠
     set list
     set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+" }}}
 
-" }
-
-" Formatting {
+" Formatting {{{
     set nowrap                      " Do not wrap long lines
     set autoindent                  " Indent at the same level of the previous line
     set shiftwidth=4                " Use indents of 4 spaces
@@ -317,11 +316,9 @@
     autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
     autocmd FileType ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
     " preceding line best in a plugin but here for now.
+" }}}
 
-" }
-
-" Key (re)Mappings {
-
+" Key (re)Mappings {{{
     " Wrapped lines goes down/up to next row, rather than next line in file.
     noremap j gj
     noremap k gk
@@ -344,10 +341,9 @@
     nmap <silent> <leader>/ :nohlsearch<CR>
     nmap <silent> <leader>/ :set invhlsearch<CR>
 
-" }
+" }}}
 
-" Functions {
-
+" Functions {{{
     " Initialize directories {
     function! InitializeDirectories()
         let parent = $HOME
@@ -444,5 +440,12 @@
     function! s:ExpandFilenameAndExecute(command, file)
         execute a:command . " " . expand(a:file, ":p")
     endfunction
-" }
+" }}}
+
+" Auto load vimrc when write {{{
+    augroup myvimrc
+        au!
+        au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_runing') | so $MYGVIMRC | endif
+    augroup END
+" }}}
 
