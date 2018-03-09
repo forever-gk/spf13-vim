@@ -41,7 +41,7 @@
     " In your .vimrc.before file
     " list only the plugin groups you will use
     if !exists('g:spf13_bundle_groups')
-        let g:spf13_bundle_groups=['general', 'neocomplete', 'programming',]
+        let g:spf13_bundle_groups=['general', 'deoplete', 'programming',]
         "let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc', 'git',]
     endif
 
@@ -95,6 +95,7 @@
             Plug 'scrooloose/nerdcommenter'
             Plug 'tpope/vim-commentary'     "批量注释工具, 可以注释多行和去除多行注释
             Plug 'godlygeek/tabular'
+            Plug 'tpope/vim-fugitive'
             "Plug 'junegunn/vim-easy-align'
             Plug 'luochen1990/rainbow'      "instead of  "Plug 'kien/rainbow_parentheses.vim'
             if executable('ctags')
@@ -128,10 +129,20 @@
             Plug 'Shougo/neosnippet-snippets'
             Plug 'honza/vim-snippets'
         elseif count(g:spf13_bundle_groups, 'neocomplete')
-            Plug 'Shougo/neocomplete.vim'
+            if !has('nvim')
+                Plug 'Shougo/neocomplete.vim'
+            endif
             Plug 'Shougo/neosnippet'
             Plug 'Shougo/neosnippet-snippets'
             Plug 'honza/vim-snippets'
+        elseif count(g:spf13_bundle_groups, 'deoplete')
+            if has('nvim')
+                Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+            else
+                Plug 'Shougo/deoplete.nvim'
+                Plug 'roxma/nvim-yarp'
+                Plug 'roxma/vim-hug-neovim-rpc'
+            endif
         endif
    " }
 
@@ -147,9 +158,23 @@
 
 " }}}
 
+" vim-plug end {
+    call plug#end()
+" }
+
 " Plugins Setting {{{
 
-    " Ctags {
+    "vim-colorschemes {{{
+        if isdirectory($USRPLGD . 'vim-colorschemes')
+            let g:solarized_termcolors=256
+            let g:solarized_termtrans=1
+            let g:solarized_contrast="normal"
+            let g:solarized_visibility="normal"
+            color solarized             " Load a colorscheme
+        endif
+    " }}}
+
+    " Ctags {{{
         map <F5> :!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q .<CR><CR> :TlistUpdate<CR>
         imap <F5> <ESC>:!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q .<CR><CR> :TlistUpdate<CR>
 
@@ -160,7 +185,7 @@
         "if gitroot != ''
         "    let &tags = &tags . ',' . gitroot . '/.git/tags'
         "endif
-    " }
+    " }}}
 
     " SnipMate {
         " Setting the author var
@@ -451,6 +476,10 @@
         endif
     " }
 
+    " deoplete {
+        let g:deoplete#enable_at_startup = 1
+    " }
+
     " Snippets {
         if count(g:spf13_bundle_groups, 'neocomplcache') ||
                     \ count(g:spf13_bundle_groups, 'neocomplete')
@@ -532,6 +561,3 @@
     " }}}
 " }}}
 
-" vim-plug end {
-    call plug#end()
-" }

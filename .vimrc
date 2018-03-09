@@ -94,27 +94,19 @@
 " }}}
 
 " Use before config {
-    if exists('g:vim_custom_path')
-        let vimrc_before_path = g:vim_custom_path.'/.vimrc.before'
-    else
-        let vimrc_before_path = '~/.vimrc.before'
-    endif
-    if filereadable(expand(vimrc_before_path))
-        exec 'source ' . fnameescape(vimrc_before_path)
+    let s:vimrc_before_config = fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/.vimrc.before'
+    if filereadable(s:vimrc_before_config)
+        exec 'source ' . fnameescape(s:vimrc_before_config)
     endif
 " }
 
 " Use bundles config {{{
     " load .vimrc.bundles & .vimrc.bundles.local
-    if exists('g:vim_custom_path')
-        let vimrc_plugins_path = g:vim_custom_path.'/.vimrc.bundles'
-    else
-        let vimrc_plugins_path = '~/.vimrc.bundles'
-    endif
+    let s:vimrc_plugins_path = fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/.vimrc.bundles'
 
     filetype off "required 
-    if filereadable(expand(vimrc_plugins_path))
-        exec 'source ' . fnameescape(vimrc_plugins_path)
+    if filereadable(s:vimrc_plugins_path)
+        exec 'source ' . fnameescape(s:vimrc_plugins_path)
     endif
 
     " vundle#end
@@ -202,6 +194,7 @@
 
 " Vim UI {{{
     " Allow to trigger background
+    set background=dark
     function! ToggleBG()
         let s:tbg = &background
         " Inversion
@@ -212,14 +205,12 @@
         endif
     endfunction
     noremap <leader>bg :call ToggleBG()<CR>
-    set background=dark
-    set nospell
-    color desert             " Load a colorscheme
-    " GVIM- (here instead of .gvimrc)
+
     if has("gui_running")
         set cursorline              " Highlight current line
         set guioptions-=T           " Remove the toolbar
         set lines=40                " 40 lines of text instead of 24
+        set columns=155
         set spell                   " Spell checking on
         set mouse=a                 " Automatically enable mouse usage
         if !exists("g:spf13_no_big_font")
@@ -231,14 +222,8 @@
                 set guifont=Monaco\ for\ Powerline:h9,Mono:h10,Menlo:h10,Consolas\ for\ Powerline\ FixedD:h10,Courier_New:h10
             endif
         endif
-        if filereadable(expand("~/.vim/bundle/vim-colorschemes/colors/solarized.vim"))
-            let g:solarized_termcolors=256
-            let g:solarized_termtrans=1
-            let g:solarized_contrast="normal"
-            let g:solarized_visibility="normal"
-            color solarized             " Load a colorscheme
-        endif
     else
+        set nospell
         if !WINDOWS()
             if &term == 'xterm' || &term == 'screen'
                 set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
@@ -249,7 +234,6 @@
 
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
-
 
     highlight clear SignColumn      " SignColumn should match background
     highlight clear LineNr          " Current line number row will have same background color in relative mode
@@ -267,6 +251,7 @@
         " Broken down into easily includeable segments
         set statusline=%<%f\                     " Filename
         set statusline+=%w%h%m%r                 " Options
+        set statusline+=%{fugitive#statusline()} " Git Hotness
         set statusline+=\ [%{&ff}/%Y]            " Filetype
         set statusline+=\ [%{getcwd()}]          " Current dir
         set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
