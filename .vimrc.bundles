@@ -25,8 +25,10 @@
     " Setup vim-plug Support {
         set rtp+=$VIMHOME
         if empty(glob(expand($VIMHOME . 'autoload/plug.vim')))
-            silent !curl -fLo $VIMHOME/autoload/plug.vim --create-dirs
-                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            "silent :!curl -fLo $VIMHOME/autoload/plug.vim --create-dirs
+            "       \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            silent execute "!curl -fLo " expand($VIMHOME . 'autoload/plug.vim') . " --create-dirs " . 
+                    \ "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
             autocmd VimEnter * PlugInstall | source $MYVIMRC
         endif
         call plug#begin($USRPLGD)
@@ -41,7 +43,7 @@
     " In your .vimrc.before file
     " list only the plugin groups you will use
     if !exists('g:spf13_bundle_groups')
-        let g:spf13_bundle_groups=['general', 'deoplete', 'programming',]
+        let g:spf13_bundle_groups=['general', 'youcompleteme', 'programming', 'git', ]
         "let g:spf13_bundle_groups=['general', 'writing', 'neocomplete', 'programming', 'php', 'ruby', 'python', 'javascript', 'html', 'misc', 'git',]
     endif
 
@@ -62,6 +64,7 @@
             Plug 'vim-airline/vim-airline'
             Plug 'vim-airline/vim-airline-themes'
             Plug 'sjl/gundo.vim'
+            Plug 'ctrlpvim/ctrlp.vim'
             Plug 'vim-ctrlspace/vim-ctrlspace'
             "Plug 'thaerkh/vim-workspace'
             "Plug 'ervandew/supertab'
@@ -95,7 +98,6 @@
             Plug 'scrooloose/nerdcommenter'
             Plug 'tpope/vim-commentary'     "批量注释工具, 可以注释多行和去除多行注释
             Plug 'godlygeek/tabular'
-            Plug 'tpope/vim-fugitive'
             "Plug 'junegunn/vim-easy-align'
             Plug 'luochen1990/rainbow'      "instead of  "Plug 'kien/rainbow_parentheses.vim'
             if executable('ctags')
@@ -107,6 +109,7 @@
     " Git {
         if count(g:spf13_bundle_groups, 'git')
             Plug 'mattn/gist-vim'
+            Plug 'tpope/vim-fugitive'
         endif
 
     "}
@@ -164,6 +167,11 @@
 
 " Plugins Setting {{{
 
+    "ctrlp {{{
+        let g:ctrlp_map = '<c-p>'
+        let g:ctrlp_cmd = 'CtrlP'
+    "}}}
+
     "vim-colorschemes {{{
         if isdirectory($USRPLGD . 'vim-colorschemes')
             let g:solarized_termcolors=256
@@ -175,10 +183,10 @@
     " }}}
 
     " Ctags {{{
-        map <F5> :!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q .<CR><CR> :TlistUpdate<CR>
-        imap <F5> <ESC>:!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q .<CR><CR> :TlistUpdate<CR>
+        map <F5> :!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q -f .tag .<CR><CR> :TlistUpdate<CR>
+        imap <F5> <ESC>:!ctags -R --languages=c++ --langmap=c++:+.inl -h +.inl --c++-kinds=+px --fields=+aiKSz --extra=+q -f .tag .<CR><CR> :TlistUpdate<CR>
 
-        set tags=./tags;/,~/.vimtags
+        set tags=./.tags;/,.tags
 
         " Make tags placed in .git/tags file available in all levels of a repository
         "let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
@@ -280,7 +288,7 @@
 
     " TagBar {
         if isdirectory($USRPLGD . 'tagbar')
-            nnoremap <silent> <leader>tt :TagbarToggle<CR>
+            nnoremap <silent> <leader>tb :TagbarToggle<CR>
             let g:tagbar_autofocus = 1
             " let g:tagbar_autoshowtag = 1
             " let g:tagbar_show_visibility = 1
@@ -305,8 +313,9 @@
 
     " YouCompleteMe {
         if count(g:spf13_bundle_groups, 'youcompleteme')
+            let g:ycm_python_binary_path = 'python3'
             let g:acp_enableAtStartup = 0
-
+                
             " enable completion from tags
             let g:ycm_collect_identifiers_from_tags_files = 1
 
@@ -337,7 +346,9 @@
                     set conceallevel=2 concealcursor=i
                 endif
             endif
-
+            if !empty(glob($USRPLGD . 'YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'))
+                let g:ycm_global_ycm_extra_conf = $USRPLGD . "/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
+            endif
             " Disable the neosnippet preview candidate window
             " When enabled, there can be too much visual noise
             " especially when splits are used.
@@ -478,6 +489,8 @@
 
     " deoplete {
         let g:deoplete#enable_at_startup = 1
+        " deoplete tab-complete
+        inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
     " }
 
     " Snippets {
