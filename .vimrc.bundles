@@ -315,7 +315,11 @@
         if count(g:spf13_bundle_groups, 'youcompleteme')
             let g:ycm_python_binary_path = 'python3'
             let g:acp_enableAtStartup = 0
-                
+            
+            let g:ycm_complete_in_comments = 1  "在注释输入中也能补全
+            let g:ycm_complete_in_strings = 1   "在字符串输入中也能补全
+            let g:ycm_use_ultisnips_completer = 1 "提示UltiSnips
+            let g:ycm_collect_identifiers_from_comments_and_strings = 1   "注释和字符串中的文字也会被收入补全
             " enable completion from tags
             let g:ycm_collect_identifiers_from_tags_files = 1
 
@@ -323,7 +327,14 @@
             let g:UltiSnipsExpandTrigger = '<C-j>'
             let g:UltiSnipsJumpForwardTrigger = '<C-j>'
             let g:UltiSnipsJumpBackwardTrigger = '<C-k>'
-
+            
+            " 跳转到定义处, 分屏打开
+            let g:ycm_goto_buffer_command = 'horizontal-split'
+            let g:ycm_register_as_syntastic_checker = 0
+            " nnoremap <leader>jd :YcmCompleter GoToDefinition<CR>
+            nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+            nnoremap <leader>gd :YcmCompleter GoToDeclaration<CR>
+            
             " Enable omni completion.
             autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
             autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
