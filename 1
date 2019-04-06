@@ -390,7 +390,7 @@
         endif
     endfunction
     " }
-    command! -nargs=0 StripTrailingWhitespace call StripTrailingWhitespace()
+    command! -nargs=? -complete=file_in_path -bang StripTrailingWhitespace call StripTrailingWhitespace("cc", <bang>0, "<args>")
     " Strip whitespace {
     function! StripTrailingWhitespace()
         " Preparation: save last search, and cursor position.
@@ -433,7 +433,7 @@
     
     " file is large from 10mb
     let g:LargeFile = 1024 * 1024 * 10
-    augroup LargeFile
+    augroup LargeFile 
         autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
     augroup END
 

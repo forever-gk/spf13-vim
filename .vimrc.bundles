@@ -358,8 +358,8 @@
                     set conceallevel=2 concealcursor=i
                 endif
             endif
-            if !empty(glob($USRPLGD . 'YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'))
-                let g:ycm_global_ycm_extra_conf = $USRPLGD . "/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py"
+            if !empty(glob($USRPLGD . 'YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py'))
+                let g:ycm_global_ycm_extra_conf = $USRPLGD . "/YouCompleteMe/third_party/ycmd/.ycm_extra_conf.py"
             endif
             " Disable the neosnippet preview candidate window
             " When enabled, there can be too much visual noise
