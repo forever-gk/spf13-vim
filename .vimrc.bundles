@@ -49,6 +49,8 @@
 
     " General {
         if count(g:spf13_bundle_groups, 'general')
+            Plug 'vim-scripts/a.vim'
+            Plug 'vim-scripts/LargeFile'
             Plug 'dense-analysis/ale'
             Plug 'flazz/vim-colorschemes'
             "Plug 'jlanzarotta/bufexplorer'
